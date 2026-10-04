@@ -1,0 +1,4 @@
+[tool.ruff.lint]
+# E = pycodestyle errors, F = pyflakes, B = flake8-bugbear
+# This matches the rule categories covered in the Lab 3 slides.
+select = ["E", "F", "B"]
