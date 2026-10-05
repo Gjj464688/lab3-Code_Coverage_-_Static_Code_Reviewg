@@ -41,8 +41,8 @@ def load_config(path):
     try:
         with open(path) as f:
             return f.read()
-    except:
-        pass
+    except OSError:
+        return None
 
 
 def is_ready(status):

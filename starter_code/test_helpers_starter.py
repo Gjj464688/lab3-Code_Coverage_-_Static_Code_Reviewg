@@ -143,3 +143,41 @@ def test_parse_due_date_malformed_uses_fallback():
 def test_days_until_due():
     today = date(2026, 10, 4)
     assert days_until_due("2026-10-14", today) == 10
+
+def test_truncate_title_rejects_non_string():
+    with pytest.raises(TypeError):
+        truncate_title(123)
+
+
+def test_truncate_title_with_small_limit():
+    assert truncate_title("abcdef", max_length=3) == "abc"
+
+
+def test_slugify_rejects_non_string():
+    with pytest.raises(TypeError):
+        slugify(123)
+
+
+@pytest.mark.parametrize("email", [None, ""])
+def test_is_valid_email_rejects_missing_input(email):
+    assert is_valid_email(email) is False
+
+
+@pytest.mark.parametrize("date_str", [None, ""])
+def test_parse_due_date_missing_uses_fallback(date_str):
+    fallback = date(2026, 12, 31)
+    assert parse_due_date(date_str, fallback=fallback) == fallback
+
+
+def test_days_until_due_invalid_date():
+    assert days_until_due("not-a-date") is None
+
+
+def test_days_until_due_uses_current_date(monkeypatch):
+    class FixedDate(date):
+        @classmethod
+        def today(cls):
+            return cls(2026, 10, 4)
+
+    monkeypatch.setattr("helpers.date", FixedDate)
+    assert days_until_due("2026-10-14") == 10
